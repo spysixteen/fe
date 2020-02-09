@@ -1,0 +1,40 @@
+@import "../../utils/styleVariables.scss";
+
+.profilecontainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px;
+  min-width: 100px;
+  border: 5px solid rgba($color: $ass, $alpha: 0.5);
+  border-radius: 5px;
+  cursor: default;
+}
+
+.username {
+  color: black;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.playertype {
+  margin-top: 5px;
+  margin-bottom: 25px;
+  color: black;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.blue {
+  background-color: rgba($color: $blue, $alpha: 0.5);
+}
+.red {
+  background-color: rgba($color: $red, $alpha: 0.5);
+}
+.none {
+  background-color: rgba($color: $none, $alpha: 0.5);
+}

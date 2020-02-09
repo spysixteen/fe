@@ -1,0 +1,47 @@
+// Colors
+$none: #f1e2cf;
+$red: hsl(0, 90%, 60%);
+$blue: hsl(240, 80%, 60%);
+$ass: #444444;
+
+// Color classes
+.blue {
+  background-color: $blue;
+}
+
+.red {
+  background-color: $red;
+}
+
+.ass {
+  background-color: $ass;
+}
+
+.none {
+  background-color: $none;
+}
+
+.buttons {
+  cursor: pointer;
+  margin: 5px auto;
+  padding: 7px auto;
+  border: 3px solid gray;
+  border-radius: 5px;
+  background-color: $none;
+  font-size: large;
+  color: black;
+
+  &:hover {
+    border: 3px solid black;
+    box-shadow: 0 0 7px $ass;
+  }
+  &:focus {
+    outline: none;
+  }
+  &:disabled {
+    cursor: default;
+    color: gray;
+    border: 3px solid gray;
+    box-shadow: none;
+  }
+}

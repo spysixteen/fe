@@ -1,0 +1,71 @@
+@import "../../utils/styleVariables.scss";
+
+.controlpanel {
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  // justify-content: space-evenly;
+
+  .cards,
+  .gamebuttons,
+  .spybuttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .spycard,
+  .overwatchcontainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @supports (display: grid) {
+    height: 50%;
+    display: grid;
+    grid-template-columns: repeast(6, 1fr);
+    row-gap: 15px;
+    grid-template-rows: repeast(6, 1fr);
+    //prettier-ignore
+    grid-template-areas: 
+        "cards      cards      cards      cards      cards      cards     "
+        "game       game       game       game       game       game      "
+        "spy        spy        spy        spy        spy        spy       "
+        "spybuttons spybuttons spybuttons spybuttons spybuttons spybuttons"
+        "overwatch  overwatch  overwatch  overwatch  overwatch  overwatch "
+        "overwatch  overwatch  overwatch  overwatch  overwatch  overwatch "
+        ;
+
+    @media screen and (min-width: 500px) {
+      grid-template-areas:
+        "cards      cards      cards      cards      cards      cards     "
+        "game       game       game       game       game       game      "
+        "spy        spy        spy        spybuttons spybuttons spybuttons"
+        "spy        spy        spy        spybuttons spybuttons spybuttons"
+        "overwatch  overwatch  overwatch  overwatch  overwatch  overwatch "
+        "overwatch  overwatch  overwatch  overwatch  overwatch  overwatch "
+        ;
+    }
+
+    .cards {
+      grid-area: cards;
+    }
+    .gamebuttons {
+      grid-area: game;
+    }
+    .spycard {
+      grid-area: spy;
+      flex-wrap: wrap;
+    }
+    .spybuttons {
+      grid-area: spybuttons;
+      @media screen and (min-width: 500px) {
+        flex-direction: column;
+      }
+    }
+
+    .overwatchcontainer {
+      grid-area: overwatch;
+    }
+  }
+}

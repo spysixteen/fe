@@ -1,0 +1,39 @@
+@import "../../utils/styleVariables.scss";
+
+.form {
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  width: 250px;
+  height: 300px;
+  padding: 15px;
+  padding-top: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  background-color: $none;
+  border: 5px solid gray;
+  border-radius: 5px;
+}
+
+.heading {
+  margin: 25px auto 30px;
+  color: black;
+  font-size: 30px;
+}
+
+.input {
+  border: 2px solid gray;
+  border-radius: 3px;
+  padding: 5px 0 5px 2px;
+  background: transparent;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.button {
+  max-width: 100%;
+  width: 60%;
+}

@@ -1,0 +1,26 @@
+@import "../../utils/styleVariables.scss";
+
+.spygrid {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  padding: 0.5%;
+  background-color: black;
+  display: grid;
+  grid-template-columns: repeat(5, 20% [col]);
+  grid-template-rows: repeat(5, 20% [col]);
+}
+// .spygrid:after {
+//   content: "";
+//   padding-bottom: 100%;
+// }
+
+.border {
+  margin: 5%
+}
+
+.tilestyle {
+  width: 100%;
+  height: 100%;
+  border-radius: 5%;
+}
