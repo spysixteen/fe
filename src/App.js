@@ -28,10 +28,11 @@ function App() {
   // Needed for development to test on both phone and computer
   // Computer uses "localhost" while phone uses the computer's name
   // This makes sure we use the proper url no matter which device we use.
-  const urlBase = window.location.href.replace(/:3000\/.*/, "");
+  // const urlBase = window.location.href.replace(/:3000\/.*/, "") + ":2019";
+  const urlBase = "https://devwarr-spiesconnect.herokuapp.com/";
 
   React.useEffect(() => {
-    if (!socket) setSocket(io.connect(`${urlBase}:2019`));
+    if (!socket) setSocket(io.connect(urlBase));
     if (socket) {
       socket.on("loggedin", username => {
         setUser({ username, overwatch: false });
