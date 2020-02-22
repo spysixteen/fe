@@ -143,6 +143,7 @@ function App() {
       setView={setView}
       isLogged={user.socketId}
       roomID={roomID}
+      location={location}
     />
   );
 
