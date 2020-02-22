@@ -34,15 +34,15 @@ function App() {
   React.useEffect(() => {
     if (!socket) setSocket(io.connect(urlBase));
     if (socket) {
-      socket.on("loggedin", ({user, roomID}) => {
+      socket.on("loggedin", ({ user, roomID }) => {
         setUser(user);
         setRoomID(roomID);
-        console.log(roomID)
+        console.log(roomID);
       });
       socket.on("logagain", message => {
         setView("login");
         setUser({});
-        console.log(message)
+        console.log(message);
       });
       socket.on("newuser", console.log);
       socket.on("serverping", () => socket.emit("clientpong"));
@@ -80,26 +80,21 @@ function App() {
     socket.emit(socketCommand, userInfo);
   };
 
-  const overwatch = e =>
-    socket.emit("selectoverwatch", {
-      username: user.username,
-      isBlue: e.target.id === "true"
-    });
-  const noOverwatch = () => socket.emit("nooverwatch", user);
+  const overwatch = e => socket.emit("selectoverwatch", { roomID });
+  const noOverwatch = () => socket.emit("nooverwatch", { roomID });
 
-  const getCards = () => socket.emit("getcards");
-  const confirmCards = () => socket.emit("confirmcards");
+  const getCards = () => socket.emit("getcards", { roomID });
+  const confirmCards = () => socket.emit("confirmcards", { roomID });
 
-  const getSpyCard = () => socket.emit("getspycard", user.username);
-  const confirmSpyCard = () => socket.emit("confirmspycard", user.username);
+  const getSpyCard = () => socket.emit("getspycard", { roomID });
+  const confirmSpyCard = () => socket.emit("confirmspycard", { roomID });
 
   const clickCard = _clickedCard =>
-    socket.emit("clickcard", { username: user.username, _clickedCard });
-  const revealCard = () => socket.emit("revealcard", user.username);
+    socket.emit("clickcard", { roomID, _clickedCard });
+  const revealCard = () => socket.emit("revealcard", { roomID });
 
-  const startGame = () => socket.emit("startgame");
-  const resetAll = () =>
-    socket.emit("resetall", localStorage.getItem("password"));
+  const startGame = () => socket.emit("startgame", { roomID });
+  const resetAll = () => socket.emit("resetall", { roomID });
 
   const readyToStart = () =>
     ready.cards && ready.spyCard && ready.overwatch === 2;
