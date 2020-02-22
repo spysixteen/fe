@@ -9,12 +9,26 @@ import {
   joincontainer,
   joininput,
   joinbutton,
-  createbutton
+  createbutton,
+  sharediv,
+  sharetop,
+  sharebottom
 } from "./styles.module.scss";
 
-const Login = ({ onSubmit, setView, isLogged, roomID }) => {
+const Login = ({ onSubmit, setView, isLogged, roomID, location }) => {
   const [username, setUsername] = React.useState("");
   const [_gameRoom, setGameRoom] = React.useState(roomID);
+  const shareableLink = location.pathname.slice(1)
+    ? window.location.href.replace(location.pathname.slice(1), `${roomID}`)
+    : window.location.href + roomID;
+
+  const [copyMe, setCopyMe] = React.useState("Play with friends!");
+  const copyRef = React.useRef(null);
+  const copy = () => {
+    copyRef.current.select();
+    document.execCommand("copy");
+    setCopyMe("Copied!");
+  };
 
   const login = () => (
     <>
@@ -82,9 +96,14 @@ const Login = ({ onSubmit, setView, isLogged, roomID }) => {
       >
         Overwatch View
       </button>
-      <div>
-        <p>Play with friends!</p>
-        <p>{window.location.href + _gameRoom}</p>
+      <div className={[button, buttons, sharediv].join(" ")} onClick={copy}>
+        <p className={sharetop}>{copyMe}</p>
+        <input
+          className={sharebottom}
+          ref={copyRef}
+          value={shareableLink}
+          readOnly
+        />
       </div>
     </>
   );

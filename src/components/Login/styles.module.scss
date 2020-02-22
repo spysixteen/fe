@@ -77,10 +77,39 @@
 .createbutton {
   height: 2rem;
   background-color: rgba($color: $blue, $alpha: 0.5);
-  
+
   &:hover {
     color: white;
     font-weight: bold;
     background-color: rgba($color: $blue, $alpha: 1);
+  }
+}
+.sharediv {
+  cursor: copy;
+  height: auto;
+  padding-left: 5px;
+  text-align: center;
+}
+
+.sharetop {
+  margin: 0;
+  font-size: medium;
+  width: 100%;
+  text-align: center;
+}
+
+.sharebottom {
+  margin: 0;
+  background-color: transparent;
+  border: none;
+  font-size: medium;
+  width: 100%;
+  text-align: center;
+
+  &:hover {
+    cursor: inherit;
+  }
+  &:focus {
+    outline: none;
   }
 }
