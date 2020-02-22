@@ -9,8 +9,8 @@ import UserView from "./components/User/User";
 
 function App() {
   const location = useLocation();
-  const [roomID, setRoomID] = React.useState(location.pathname.slice(1));
   const [socket, setSocket] = React.useState();
+  const [roomID, setRoomID] = React.useState(location.pathname.slice(1));
   const [ready, setReady] = React.useState({
     cards: false,
     spyCard: false,
@@ -18,18 +18,49 @@ function App() {
   });
   const [cards, setCards] = React.useState([]);
   const [spyCard, setSpyCard] = React.useState([]);
-  const [game, setGame] = React.useState(false);
-  const [user, setUser] = React.useState(() => {
-    return { username: "", overwatch: false };
-  });
+  const [game, setGame] = React.useState("login");
+  const [user, setUser] = React.useState({});
   const [view, setView] = React.useState("login");
+  /*
+  =========================================================
+  Object Structure:
+
+  enum cardType {
+    civilian:  0
+    blue:      1
+    red:       2
+    assassin:  3
+  }
+  game = "login" | "setup" | "gaming" | "finish"
+  view = "login" | "full"  | "cards"  | "overwatch"
+  endGameVictor = 0 | 1 | 2
+
+  user: {
+    username:  string;
+    socketId:  string;
+    overwatch: 0|1|2
+  }
+  card: {
+    id:        number;
+    text:      string;
+    spy:       0|1|2|3;
+    clicked:   bool;
+    revealed:  bool;
+  }
+  spyCardSquare: {
+    id:        number;
+    val:       0|1|2|3
+  }
+
+  =========================================================
+  */
 
   // Needed for development to test on both phone and computer
   // Computer uses "localhost" while phone uses the computer's name
-  // This makes sure we use the proper url no matter which device we use.
+  // This makes sure we connect to the proper back-end url
+  //     no matter which device we use.
   const urlBase = window.location.href.replace(/:3000\/.*/, "") + ":2019";
   // const urlBase = "https://devwarr-spiesconnect.herokuapp.com/";
-  console.log(location);
 
   React.useEffect(() => {
     if (!socket) setSocket(io.connect(urlBase));
@@ -45,28 +76,17 @@ function App() {
         console.log(message);
       });
       socket.on("newuser", console.log);
-      socket.on("serverping", () => socket.emit("clientpong"));
-      socket.on("resetall", () => {
-        setUser(oldUser => ({ ...oldUser, overwatch: false }));
-      });
 
       socket.on("overwatchassigned", console.log);
       socket.on("newoverwatch", console.log);
       socket.on("assignedoverwatch", setUser);
-
-      socket.on("newcards", setCards);
-      socket.on("newspycard", setSpyCard);
-      socket.on("securespycard", () => setSpyCard([]));
-
-      socket.on("cardclicked", setCards);
-      socket.on("cardrevealed", setCards);
 
       socket.on("gamefail", console.log);
       socket.on("gameinfo", info => {
         console.log(info);
         setCards(info.gameCards);
         setSpyCard(info.spyCard);
-        setGame(info.state === "gaming");
+        setGame(info.state);
         setReady({
           cards: info.lockCards,
           spyCard: info.lockSpyCard,
@@ -80,7 +100,7 @@ function App() {
     socket.emit(socketCommand, userInfo);
   };
 
-  const overwatch = e => socket.emit("selectoverwatch", { roomID });
+  const overwatch = () => socket.emit("selectoverwatch", { roomID });
   const noOverwatch = () => socket.emit("nooverwatch", { roomID });
 
   const getCards = () => socket.emit("getcards", { roomID });
@@ -89,15 +109,12 @@ function App() {
   const getSpyCard = () => socket.emit("getspycard", { roomID });
   const confirmSpyCard = () => socket.emit("confirmspycard", { roomID });
 
-  const clickCard = _clickedCard =>
-    socket.emit("clickcard", { roomID, _clickedCard });
+  const clickCard = clickedCard =>
+    socket.emit("clickcard", { roomID, clickedCard });
   const revealCard = () => socket.emit("revealcard", { roomID });
 
   const startGame = () => socket.emit("startgame", { roomID });
   const resetAll = () => socket.emit("resetall", { roomID });
-
-  const readyToStart = () =>
-    ready.cards && ready.spyCard && ready.overwatch === 2;
 
   const controlPanelProps = {
     user,
@@ -110,7 +127,6 @@ function App() {
     overwatch,
     getCards,
     confirmCards,
-    readyToStart,
     startGame,
     revealCard,
     resetAll
