@@ -9,7 +9,7 @@ import UserView from "./components/User/User";
 
 function App() {
   const location = useLocation();
-  const [gameRoom, setGameRoom] = React.useState(location.pathname.slice(1));
+  const [roomID, setRoomID] = React.useState(location.pathname.slice(1));
   const [socket, setSocket] = React.useState();
   const [ready, setReady] = React.useState({
     cards: false,
@@ -36,7 +36,7 @@ function App() {
     if (socket) {
       socket.on("loggedin", ({user, roomID}) => {
         setUser(user);
-        setGameRoom(roomID);
+        setRoomID(roomID);
         console.log(roomID)
       });
       socket.on("logagain", message => {
@@ -137,7 +137,7 @@ function App() {
       onSubmit={login}
       setView={setView}
       isLogged={user.socketId}
-      gameRoom={gameRoom}
+      roomID={roomID}
     />
   );
 

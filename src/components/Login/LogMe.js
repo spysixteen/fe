@@ -12,9 +12,9 @@ import {
   createbutton
 } from "./styles.module.scss";
 
-const Login = ({ onSubmit, setView, isLogged, gameRoom }) => {
+const Login = ({ onSubmit, setView, isLogged, roomID }) => {
   const [username, setUsername] = React.useState("");
-  const [_gameRoom, setGameRoom] = React.useState(gameRoom);
+  const [_gameRoom, setGameRoom] = React.useState(roomID);
 
   const login = () => (
     <>
@@ -82,6 +82,10 @@ const Login = ({ onSubmit, setView, isLogged, gameRoom }) => {
       >
         Overwatch View
       </button>
+      <div>
+        <p>Play with friends!</p>
+        <p>{window.location.href + _gameRoom}</p>
+      </div>
     </>
   );
 
