@@ -13,7 +13,6 @@ const ControlPanel = props => {
     overwatch,
     getCards,
     confirmCards,
-    readyToStart,
     ready,
     game,
     startGame,
@@ -21,8 +20,11 @@ const ControlPanel = props => {
     resetAll
   } = props;
 
+  const readyToStart = () =>
+    ready.cards && ready.spyCard && ready.overwatch === 2;
+
   const cardsView = () => {
-    if (game) return <div className="cards" />;
+    if (game !== "setup") return <div className="cards" />;
     else
       return (
         <div className="cards">
@@ -41,9 +43,9 @@ const ControlPanel = props => {
   };
 
   const gameButtonsView = () => {
-    const start = () => !game && readyToStart();
-    const reveal = () => game && user.overwatch !== false;
-    const warvdine = () => user.username === "WarVDine";
+    const start = () => game === "setup" && readyToStart();
+    const reveal = () => game === "gaming" && user.overwatch !== false;
+    const finish = () => game === "finish";
 
     return (
       <div className="gamebuttons">
@@ -57,7 +59,7 @@ const ControlPanel = props => {
             Reveal Selected Card
           </button>
         )}
-        {warvdine() && (
+        {finish() && (
           <button className="buttons" onClick={resetAll}>
             Reset the game!
           </button>
@@ -73,7 +75,7 @@ const ControlPanel = props => {
           <div className="spycard">
             <SpyCard spyCard={spyCard} />
           </div>
-          {!game && (
+          {game === "setup" && (
             <div className="spybuttons">
               <button
                 className="buttons"
@@ -95,11 +97,11 @@ const ControlPanel = props => {
       );
 
     const overwatchView = () => {
-      if (game) return;
+      if (game !== "setup") return;
       else
         return (
           <div className="overwatchcontainer">
-            {user.overwatch !== false ? (
+            {user.overwatch ? (
               <button
                 className="buttons overwatch"
                 disabled={ready.spyCard}
