@@ -1,23 +1,65 @@
 import React from "react";
 
-import { form, heading, input, button, buttons } from "./styles.module.scss";
+import {
+  form,
+  heading,
+  input,
+  button,
+  buttons,
+  joincontainer,
+  joininput,
+  joinbutton,
+  createbutton
+} from "./styles.module.scss";
 
-const Login = ({ onSubmit }) => {
+const Login = ({ onSubmit, setView, isLogged, gameRoom }) => {
   const [username, setUsername] = React.useState("");
+  const [_gameRoom, setGameRoom] = React.useState(gameRoom);
 
-  return (
-    <form className={form}>
-      <h2 className={heading}>Spies With Codes</h2>
+  const login = () => (
+    <>
       <input
         className={input}
+        value={username}
         placeholder="username"
         onChange={e => setUsername(e.target.value)}
       />
+      <div className={joincontainer}>
+        <input
+          className={joininput}
+          value={_gameRoom}
+          placeholder="Game Room"
+          onChange={e => setGameRoom(e.target.value)}
+        />
+        <button
+          className={[buttons, joinbutton].join(" ")}
+          onClick={e => {
+            e.preventDefault();
+            onSubmit({ username, roomID: _gameRoom }, "joinroom");
+          }}
+        >
+          Join
+        </button>
+      </div>
+      <button
+        className={[button, buttons, createbutton].join(" ")}
+        onClick={e => {
+          e.preventDefault();
+          onSubmit(username, "newroom");
+        }}
+      >
+        Create Room
+      </button>
+    </>
+  );
+
+  const chooseView = () => (
+    <>
       <button
         className={[button, buttons].join(" ")}
         onClick={e => {
           e.preventDefault();
-          onSubmit(username, "full");
+          setView("full");
         }}
       >
         Full View
@@ -26,7 +68,7 @@ const Login = ({ onSubmit }) => {
         className={[button, buttons].join(" ")}
         onClick={e => {
           e.preventDefault();
-          onSubmit(username, "cards");
+          setView("cards");
         }}
       >
         Cards View
@@ -35,11 +77,18 @@ const Login = ({ onSubmit }) => {
         className={[button, buttons].join(" ")}
         onClick={e => {
           e.preventDefault();
-          onSubmit(username, "overwatch");
+          setView("overwatch");
         }}
       >
         Overwatch View
       </button>
+    </>
+  );
+
+  return (
+    <form className={form}>
+      <h2 className={heading}>Spies With Codes</h2>
+      {isLogged ? chooseView() : login()}
     </form>
   );
 };
