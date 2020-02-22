@@ -45,7 +45,7 @@ const Login = ({ onSubmit, setView, isLogged, roomID }) => {
         className={[button, buttons, createbutton].join(" ")}
         onClick={e => {
           e.preventDefault();
-          onSubmit(username, "newroom");
+          onSubmit({ username }, "newroom");
         }}
       >
         Create Room
