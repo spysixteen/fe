@@ -20,7 +20,7 @@ const Card = ({ card, clickCard }) => {
     else return none;
   };
 
-  const getClicked = () => (card.checked ? clicked : "");
+  const getClicked = () => (card.clicked ? clicked : "");
   const getRevealed = () => (card.revealed ? revealed : "");
 
   return (

@@ -1,4 +1,4 @@
-@import "../../utils/styleVariables.scss";
+@import "../../styles/styleVariables.scss";
 
 .form {
   position: absolute;
@@ -35,5 +35,52 @@
 
 .button {
   max-width: 100%;
-  width: 60%;
+  width: 100%;
+  height: 2rem;
+}
+
+.joincontainer {
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.joininput {
+  border: 3px solid gray;
+  border-right: none;
+  border-radius: 5px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  padding: 5px 0 5px 2px;
+  background: transparent;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.joinbutton {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background-color: rgba($color: $red, $alpha: 0.5);
+
+  &:hover {
+    color: white;
+    font-weight: bold;
+    background-color: rgba($color: $red, $alpha: 1);
+  }
+}
+
+.createbutton {
+  height: 2rem;
+  background-color: rgba($color: $blue, $alpha: 0.5);
+  
+  &:hover {
+    color: white;
+    font-weight: bold;
+    background-color: rgba($color: $blue, $alpha: 1);
+  }
 }

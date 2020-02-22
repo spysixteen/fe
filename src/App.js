@@ -1,5 +1,7 @@
 import React from "react";
 import io from "socket.io-client";
+import { useLocation } from "react-router-dom";
+import urlBase from "./utils/getURL";
 
 import CardList from "./components/Cards/CardList";
 import LogMe from "./components/Login/LogMe";
@@ -7,7 +9,9 @@ import ControlPanel from "./components/ControlPanel/ControlPanel";
 import UserView from "./components/User/User";
 
 function App() {
+  const location = useLocation();
   const [socket, setSocket] = React.useState();
+  const [roomID, setRoomID] = React.useState(location.pathname.slice(1));
   const [ready, setReady] = React.useState({
     cards: false,
     spyCard: false,
@@ -15,57 +19,68 @@ function App() {
   });
   const [cards, setCards] = React.useState([]);
   const [spyCard, setSpyCard] = React.useState([]);
-  const [game, setGame] = React.useState(false);
-  const [user, setUser] = React.useState(() => {
-    // const username = localStorage.getItem("username");
-    // if (username) return { username, overwatch: false };
-    // else
-    return { username: "", overwatch: false };
-  });
-  const [logged, setLogged] = React.useState();
+  const [game, setGame] = React.useState("login");
+  const [user, setUser] = React.useState({});
   const [view, setView] = React.useState("login");
+  /*
+  =========================================================
+  Object Structure:
 
-  // Needed for development to test on both phone and computer
-  // Computer uses "localhost" while phone uses the computer's name
-  // This makes sure we use the proper url no matter which device we use.
-  // const urlBase = window.location.href.replace(/:3000\/.*/, "") + ":2019";
-  const urlBase = "https://devwarr-spiesconnect.herokuapp.com/";
+  enum cardType {
+    civilian:  0
+    blue:      1
+    red:       2
+    assassin:  3
+  }
+  game = "login" | "setup" | "gaming" | "finish"
+  view = "login" | "full"  | "cards"  | "overwatch"
+  endGameVictor = 0 | 1 | 2
+
+  user: {
+    username:  string;
+    socketId:  string;
+    overwatch: 0|1|2
+  }
+  card: {
+    id:        number;
+    text:      string;
+    spy:       0|1|2|3;
+    clicked:   bool;
+    revealed:  bool;
+  }
+  spyCardSquare: {
+    id:        number;
+    val:       0|1|2|3
+  }
+
+  =========================================================
+  */
 
   React.useEffect(() => {
     if (!socket) setSocket(io.connect(urlBase));
     if (socket) {
-      socket.on("loggedin", username => {
-        setUser({ username, overwatch: false });
-        setLogged(true);
+      socket.on("loggedin", ({ user, roomID }) => {
+        setUser(user);
+        setRoomID(roomID);
+        console.log(roomID);
       });
-      socket.on("logagain", logging => {
+      socket.on("logagain", message => {
         setView("login");
-        setLogged(logging);
-        localStorage.clear();
+        setUser({});
+        console.log(message);
       });
       socket.on("newuser", console.log);
-      socket.on("serverping", () => socket.emit("clientpong"));
-      socket.on("resetall", () => {
-        setUser(oldUser => ({ ...oldUser, overwatch: false }));
-      });
 
       socket.on("overwatchassigned", console.log);
       socket.on("newoverwatch", console.log);
       socket.on("assignedoverwatch", setUser);
-
-      socket.on("newcards", setCards);
-      socket.on("newspycard", setSpyCard);
-      socket.on("securespycard", () => setSpyCard([]));
-
-      socket.on("cardclicked", setCards);
-      socket.on("cardrevealed", setCards);
 
       socket.on("gamefail", console.log);
       socket.on("gameinfo", info => {
         console.log(info);
         setCards(info.gameCards);
         setSpyCard(info.spyCard);
-        setGame(info.state === "gaming");
+        setGame(info.state);
         setReady({
           cards: info.lockCards,
           spyCard: info.lockSpyCard,
@@ -73,37 +88,27 @@ function App() {
         });
       });
     }
-  }, [socket, urlBase]);
+  }, [socket]);
 
-  const login = (username, view) => {
-    setView(view);
-    socket.emit("login", username);
-    console.log("time");
+  const login = (userInfo, socketCommand) => {
+    socket.emit(socketCommand, userInfo);
   };
 
-  const overwatch = e =>
-    socket.emit("selectoverwatch", {
-      username: user.username,
-      isBlue: e.target.id === "true"
-    });
-  const noOverwatch = () => socket.emit("nooverwatch", user);
+  const overwatch = () => socket.emit("selectoverwatch", { roomID });
+  const noOverwatch = () => socket.emit("nooverwatch", { roomID });
 
-  const getCards = () => socket.emit("getcards");
-  const confirmCards = () => socket.emit("confirmcards");
+  const getCards = () => socket.emit("getcards", { roomID });
+  const confirmCards = () => socket.emit("confirmcards", { roomID });
 
-  const getSpyCard = () => socket.emit("getspycard", user.username);
-  const confirmSpyCard = () => socket.emit("confirmspycard", user.username);
+  const getSpyCard = () => socket.emit("getspycard", { roomID });
+  const confirmSpyCard = () => socket.emit("confirmspycard", { roomID });
 
-  const clickCard = _clickedCard =>
-    socket.emit("clickcard", { username: user.username, _clickedCard });
-  const revealCard = () => socket.emit("revealcard", user.username);
+  const clickCard = clickedCard =>
+    socket.emit("clickcard", { roomID, clickedCard });
+  const revealCard = () => socket.emit("revealcard", { roomID });
 
-  const startGame = () => socket.emit("startgame");
-  const resetAll = () =>
-    socket.emit("resetall", localStorage.getItem("password"));
-
-  const readyToStart = () =>
-    ready.cards && ready.spyCard && ready.overwatch === 2;
+  const startGame = () => socket.emit("startgame", { roomID });
+  const resetAll = () => socket.emit("resetall", { roomID });
 
   const controlPanelProps = {
     user,
@@ -116,7 +121,6 @@ function App() {
     overwatch,
     getCards,
     confirmCards,
-    readyToStart,
     startGame,
     revealCard,
     resetAll
@@ -126,7 +130,6 @@ function App() {
     <>
       <CardList size="half" cards={cards} clickCard={clickCard} />
       <ControlPanel {...controlPanelProps} />
-      {/* <UserView user={user} /> */}
     </>
   );
   const cardsView = () => (
@@ -134,9 +137,18 @@ function App() {
   );
   const overwatchView = () => <ControlPanel {...controlPanelProps} />;
 
-  const loginView = () => <LogMe onSubmit={login} />;
+  const loginView = () => (
+    <LogMe
+      onSubmit={login}
+      setView={setView}
+      isLogged={user.socketId}
+      roomID={roomID}
+    />
+  );
 
   const switchView = () => {
+    if (!user.socketId) return loginView();
+
     switch (view) {
       case "cards":
         return cardsView();
@@ -151,7 +163,7 @@ function App() {
     }
   };
 
-  return <div className="App">{logged ? switchView() : loginView()}</div>;
+  return <div className="App">{switchView()}</div>;
 }
 
 export default App;
