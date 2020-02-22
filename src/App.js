@@ -1,6 +1,7 @@
 import React from "react";
 import io from "socket.io-client";
 import { useLocation } from "react-router-dom";
+import urlBase from "./utils/getURL";
 
 import CardList from "./components/Cards/CardList";
 import LogMe from "./components/Login/LogMe";
@@ -55,13 +56,6 @@ function App() {
   =========================================================
   */
 
-  // Needed for development to test on both phone and computer
-  // Computer uses "localhost" while phone uses the computer's name
-  // This makes sure we connect to the proper back-end url
-  //     no matter which device we use.
-  const urlBase = window.location.href.replace(/:3000\/.*/, "") + ":2019";
-  // const urlBase = "https://devwarr-spiesconnect.herokuapp.com/";
-
   React.useEffect(() => {
     if (!socket) setSocket(io.connect(urlBase));
     if (socket) {
@@ -94,7 +88,7 @@ function App() {
         });
       });
     }
-  }, [socket, urlBase]);
+  }, [socket]);
 
   const login = (userInfo, socketCommand) => {
     socket.emit(socketCommand, userInfo);
