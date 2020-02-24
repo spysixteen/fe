@@ -3,7 +3,7 @@ import React from "react";
 import { border, blue, red, ass, none, tilestyle } from "./styles.module.scss";
 
 const SpyTile = props => {
-  const tile = props.tile.tile;
+  const tile = props.tile.spy;
 
   const getTileType = () => {
     if (tile === 1) return blue;

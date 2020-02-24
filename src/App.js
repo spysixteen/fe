@@ -78,13 +78,16 @@ function App() {
       socket.on("gamefail", console.log);
       socket.on("gameinfo", info => {
         console.log(info);
-        setCards(info.gameCards);
+        setCards(info.gameBoard);
         setSpyCard(info.spyCard);
         setGame(info.state);
         setReady({
           cards: info.lockCards,
           spyCard: info.lockSpyCard,
-          overwatch: info.totalOverwatch
+          overwatch: info.allUsers.reduce(
+            (prev, curr) => (curr.overwatch ? ++prev : prev),
+            0
+          )
         });
       });
     }
